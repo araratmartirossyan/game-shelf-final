@@ -17,11 +17,6 @@ const routes = [
     name: 'game-form-create',
     component: GameForm
   },
-  // {
-  //   path: '/game-form-update/:id',
-  //   name: 'game-form-update',
-  //   component: GameForm
-  // },
   {
     path: '/game-detail/:id',
     name: 'game-detail',
