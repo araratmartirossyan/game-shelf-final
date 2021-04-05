@@ -1,9 +1,5 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
-// import Home from './views/Home/Home.vue'
-// import GameForm from './views/GameForm/GameForm.vue'
-// import GameDetail from './views/GameDetail/GameDetail.vue'
-
 const Home = () => import('./views/Home/Home.vue')
 const GameDetail = () => import('./views/GameDetail/GameDetail.vue')
 const GameForm = () => import('./views/GameForm/GameForm.vue')

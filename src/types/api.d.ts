@@ -4,10 +4,7 @@ declare namespace GSAPI {
   type GameResponse = {
     game: Game
   }
-  // type InputForm = {
-  //   key: 'title' | 'description' | 'genres' | 'genresIds' | 'platform' | 'picture'
-  //   value: string
-  // }
+
   type InputForm = {
     [key: string]: any
     value: string

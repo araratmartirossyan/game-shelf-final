@@ -10,7 +10,7 @@ import router from "./router";
 // @ts-ignore
 import { registerSW } from 'virtual:pwa-register'
 
-const updateSW = registerSW({
+registerSW({
   onNeedRefresh() {
     // show a prompt to user
   },

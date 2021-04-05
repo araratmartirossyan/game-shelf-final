@@ -4,35 +4,38 @@
   </svg>
 </template>
 
-<script setup>
-import { computed, defineProps } from "vue";
+<script setup lang="ts">
+import { computed, defineProps } from 'vue'
 
 const props = defineProps({
   icon: {
     type: String,
-    required: true,
+    required: true
   },
   size: {
     type: [Number, String],
     required: false,
-    default: null,
-  },
-});
+    default: null
+  }
+})
 
 const styleObject = computed(() => {
-  const style = {};
-
-  if (props.size) {
-    style.height = `${props.size}px`;
-    style.width = `${props.size}px`;
+  const style = {
+    height: '',
+    width: ''
   }
 
-  return style;
-});
+  if (props.size) {
+    style.height = `${props.size}px`
+    style.width = `${props.size}px`
+  }
+
+  return style
+})
 </script>
 
 <style lang="scss" scoped>
-@import "./../../assets/styles";
+@import './../../assets/styles';
 
 .gs-icon {
   fill: none;
