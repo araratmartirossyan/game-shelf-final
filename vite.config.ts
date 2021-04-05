@@ -18,17 +18,18 @@ const pwaConfig = {
     "description": "Virtual Game shelf of your physical games ",
     "icons": [
       {
-        "src": "manifest-icon-192.png",
+        "src": "images/manifest-icon-192.png",
         "sizes": "192x192",
         "type": "image/png",
         "purpose": "maskable any"
       },
       {
-        "src": "manifest-icon-512.png",
+        "src": "images/manifest-icon-512.png",
         "sizes": "512x512",
         "type": "image/png",
         "purpose": "maskable any"
       },
+
     ]
   },
   workbox: {
