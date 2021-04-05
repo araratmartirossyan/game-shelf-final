@@ -8,8 +8,8 @@ import vue from '@vitejs/plugin-vue'
 
 const pwaConfig = {
   manifest: {
-    "theme_color": "#f69435",
-    "background_color": "#f69435",
+    "theme_color": "#132968",
+    "background_color": "#132968",
     "display": "standalone",
     "scope": "/",
     "start_url": "/",
@@ -29,6 +29,17 @@ const pwaConfig = {
         "type": "image/png",
         "purpose": "maskable any"
       },
+      {
+        "src": "images/manifest-icon-512.png",
+        "sizes": "256x256",
+        "type": "image/png"
+      },
+      {
+        "src": "images/manifest-icon-512.png",
+        "sizes": "384x384",
+        "type": "image/png"
+      },
+
 
     ]
   },
