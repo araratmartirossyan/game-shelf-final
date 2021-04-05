@@ -1,12 +1,13 @@
 {
   "name": "msh",
-  "version": "0.0.0",
+  "version": "0.0.4",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
     "postinstall": "node ./scripts/element-fix.js"
   },
+  "license": "MIT",
   "dependencies": {
     "@urql/vue": "^0.3.0",
     "axios": "^0.21.1",
