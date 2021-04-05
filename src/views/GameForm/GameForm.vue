@@ -29,7 +29,7 @@
         filterable
         remote
         reserve-keyword
-        placeholder="Название игры"
+        placeholder="Начните писать название игры"
         :remote-method="remoteMethod"
         :loading="searchLoading"
       >
@@ -184,6 +184,7 @@ const handleUploadSuccess = ([res]: any, file: any) => {
   position: relative;
   overflow: hidden;
   width: 100%;
+  margin-bottom: $spacing-s;
 }
 .avatar-uploader .el-upload:hover {
   border-color: #409eff;

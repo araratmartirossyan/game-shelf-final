@@ -123,6 +123,9 @@ const handleDeleteGame = async () => {
 <style lang="scss">
 @import './../../assets/styles';
 
+.add-icon {
+  background: none;
+}
 .el-message-box {
   width: 300px;
   font-family: 'Nunito';

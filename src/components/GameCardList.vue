@@ -84,6 +84,7 @@ defineProps({
 
     p {
       font-size: $font-size-small;
+      margin-bottom: 0;
     }
   }
   .el-avatar {
