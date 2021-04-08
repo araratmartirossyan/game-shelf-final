@@ -1,18 +1,18 @@
-export const prepareGenres = (currentGenres: RAWGAMEAPI.Genre[], genres: any) => {
+export const prepareGenres = (currentGenres: RAWGAMEAPI.Genre[], genres: GSAPI.Genre[]) => {
   const valuesGenres = currentGenres
     .map(genre => genre.name)
     .map((genre: string) => {
       const findGenre = genres.find(
-        (i: any) => i.title === genre,
+        (currentGenre) => currentGenre && currentGenre.title?.includes(genre),
       );
       return findGenre;
     })
-    .filter((genre: any) => genre)
+    .filter(genre => genre)
 
 
   return {
-    formValues: valuesGenres.map(genre => genre.title),
-    apiValues: valuesGenres.map(genre => genre.id)
+    formValues: valuesGenres.map(genre => genre?.title),
+    apiValues: valuesGenres.map(genre => genre?.id)
   }
 }
 
@@ -21,7 +21,7 @@ export const preparePlatforms = (currentPlatforms: any, platforms: Partial<GSAPI
     .map(({ platform }: any) => platform.name)
     .map((platform: any) => {
       const filtered = platforms.find(
-        (i: any) => i.title === platform,
+        (i) => i && i.title === platform,
       );
 
       return filtered;

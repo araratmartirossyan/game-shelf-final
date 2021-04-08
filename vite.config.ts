@@ -2,6 +2,7 @@
 import { resolve } from 'path'
 import graphqlPlugin from 'vite-plugin-graphql'
 import { VitePWA } from 'vite-plugin-pwa'
+import styleImport from 'vite-plugin-style-import'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -55,6 +56,22 @@ export default defineConfig({
       { find: "@", replacement: resolve(__dirname, './src') }
     ],
   },
-  plugins: [vue(), VitePWA(pwaConfig), graphqlPlugin],
+  build: {
+    chunkSizeWarningLimit: 600,
+  },
+  plugins: [vue(), VitePWA(pwaConfig), graphqlPlugin, styleImport({
+    libs: [{
+      libraryName: 'element-plus',
+      esModule: true,
+      ensureStyleFile: true,
+      resolveStyle: (name) => {
+        name = name.slice(3)
+        return `element-plus/packages/theme-chalk/src/${name}.scss`;
+      },
+      resolveComponent: (name) => {
+        return `element-plus/lib/${name}`;
+      },
+    }]
+  })],
 })
 

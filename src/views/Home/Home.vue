@@ -1,6 +1,6 @@
 <template>
   <tg-page class="list">
-    <template #top> Games ({{ data && gamesList.length }}) </template>
+    <template #top> Games ({{ gamesList && gamesList.length }}) </template>
     <template #append>
       <el-avatar
         shape="circle"
@@ -12,7 +12,7 @@
       />
     </template>
 
-    <div class="list-cards" v-if="!fetching">
+    <div class="list-cards" v-if="!gamesStore.loading">
       <el-input
         class="list-cards__search"
         suffix-icon="el-icon-search"
@@ -37,37 +37,35 @@
 
 <script setup lang="ts">
 // libs
-import { useQuery, gql } from '@urql/vue'
-import { ref, computed, defineAsyncComponent } from 'vue'
-import useFuse from '../../hooks/useFuse'
+import { ref, defineAsyncComponent, computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+// hooks
+import useFuse from '@/hooks/useFuse'
+
+// stores
+import { useGameStore } from '@/stores/game.store'
 
 // components
 const GameCard = defineAsyncComponent(
   () => import('@/components/GameCardList.vue')
 )
-const TgPage = defineAsyncComponent(
-  () => import('@/components/layout/Page.vue')
-)
 
-// graphQl
-import { myGames } from '../../graphql/queries/games.query'
-import { useRouter } from 'vue-router'
+// Game Store logic
+const gamesStore = useGameStore()
+gamesStore.fetchGames()
 
-// logic
-const { fetching, data } = useQuery({
-  query: gql(myGames)
-})
-
-const { push } = useRouter()
-
+// Fast Search
 const search = ref('')
 
-const gamesList = (computed(() =>
-  useFuse(data?.value?.games, search.value, {
+const gamesList = computed<GSAPI.Game[]>(() =>
+  useFuse(gamesStore.games, search.value, {
     threshold: 0.3,
     keys: ['title']
   })
-) as unknown) as GSAPI.Game[]
+)
+
+const { push } = useRouter()
 </script>
 
 <style lang="scss">

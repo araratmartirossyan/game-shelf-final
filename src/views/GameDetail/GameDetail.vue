@@ -20,28 +20,32 @@
       />
     </template>
 
-    <div class="game-info" v-if="data">
+    <div class="game-info" v-if="gamesStore.game">
       <div class="game-info__header">
-        <el-avatar shape="square" scale="fill" :src="picture" />
+        <el-avatar
+          shape="square"
+          scale="fill"
+          :src="gamesStore.oneGamePicture"
+        />
       </div>
       <div class="game-info__content">
         <div class="game-info__content-header">
           <div class="game-info__content_text">
             <heading tag="h5">
-              {{ data.game.title }}
+              {{ gamesStore.oneGame.title }}
             </heading>
             <span class="game-info__content_platform">
-              {{ data?.game?.platform?.title }}
+              {{ gamesStore.oneGame.platform?.title }}
             </span>
 
             <div class="game-info__content_tags">
               <el-tag
                 class="game-info__content_tags"
-                v-for="tag in data?.game?.genres"
-                :key="tag?.title"
+                v-for="genre in gamesStore.oneGame.genres"
+                :key="genre?.title"
                 type="info"
               >
-                #{{ tag?.title }}
+                #{{ genre?.title }}
               </el-tag>
             </div>
           </div>
@@ -50,7 +54,7 @@
         <div class="game-info__content-description">
           <heading tag="h5" bold> Описание: </heading>
           <p class="paragraph">
-            {{ data.game.description }}
+            {{ gamesStore.oneGame.description }}
           </p>
         </div>
       </div>
@@ -59,63 +63,33 @@
 </template>
 
 <script setup lang="ts">
-// const Heading = () => import("@/components/Heading.vue");
-// const defaultImage = () => import("@/assets/game-controller.svg");
-
 // libs
-import { useQuery, useMutation, gql } from '@urql/vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { defineAsyncComponent } from 'vue'
 
 // GraphQl
-import { game } from './../../graphql/queries/game.query'
-import { deleteGame } from './../../graphql/mutations/deleteGame.mutation'
+import { deleteGame } from '@/graphql/mutations/deleteGame.mutation'
+import { useMutation } from '@urql/vue'
 
-import { computed, defineAsyncComponent } from 'vue'
+// stores
+import { useGameStore } from '@/stores/game.store'
 
 // Components
-const TgPage = defineAsyncComponent(
-  () => import('@/components/layout/Page.vue')
-)
 const Heading = defineAsyncComponent(() => import('@/components/Heading.vue'))
-const defaultImage = () => import('../../assets/game-controller.svg')
-
-const defaultUrl = import.meta.env.API_URL || 'https://graph.myshelf.info'
 
 const { params } = useRoute()
 const { push } = useRouter()
 
-const { data } = useQuery<GSAPI.GameResponse>({
-  query: gql(game),
-  variables: { id: params.id }
-})
+const gamesStore = useGameStore()
+gamesStore.fetchGame(params.id)
 
-const picture = computed(() => {
-  const picture = data?.value?.game?.picture?.formats.large
-  return picture ? `${defaultUrl}${picture.url}` : defaultImage
-})
+// Can't call useMutation outside of setup function
+const { executeMutation } = useMutation(deleteGame)
 
-const { executeMutation } = useMutation(gql(deleteGame))
 const handleDeleteGame = async () => {
-  try {
-    await ElMessageBox.confirm('Игра будет удалена', 'Внимание', {
-      type: 'warning',
-      confirmButtonText: 'OK',
-      cancelButtonText: 'Отмена'
-    })
-    executeMutation({
-      input: { where: { id: params.id } }
-    })
-    ElMessage({
-      type: 'success',
-      message: 'Удалено'
-    })
+  const result = await gamesStore.deleteGame(params.id, executeMutation)
+  if (result) {
     push('/')
-  } catch (err) {
-    ElMessage({
-      type: 'info',
-      message: 'Отменено'
-    })
   }
 }
 </script>

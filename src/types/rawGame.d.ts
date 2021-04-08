@@ -79,7 +79,6 @@ declare namespace RAWGAMEAPI {
     id: number;
     name: string;
     slug: string;
-
   }
 
   type Tag = {
@@ -91,4 +90,11 @@ declare namespace RAWGAMEAPI {
     image_background: string;
   }
 
+  type RawGamesResponse = {
+    games: RAW_GAME[]
+  }
+
+  type FoundGameGetter = {
+    foundGame: Partial<GSAPI.Game>
+  }
 }

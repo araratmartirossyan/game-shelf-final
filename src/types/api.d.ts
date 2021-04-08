@@ -1,14 +1,17 @@
 declare namespace GSAPI {
+  type GamesResponse = {
+    games: Game[]
+  }
 
-  type GamesResponse = { games: Game[] }
   type GameResponse = {
     game: Game
   }
 
   type InputForm = {
-    [key: string]: any
+    key: string
     value: string
   }
+
   type CreateGameInput = {
     title?: string;
     description?: string;
@@ -29,6 +32,10 @@ declare namespace GSAPI {
     updatedAt?: string;
     __typename?: string;
     picture?: Picture
+  }
+
+  interface GameForm extends Omit<Game, 'genres'> {
+    genres?: string[];
   }
 
   type Picture = {

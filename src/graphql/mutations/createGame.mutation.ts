@@ -1,6 +1,6 @@
 import { gql } from "@urql/core";
 
-export const createGame = gql(`
+export const createGameMutation = gql(`
   mutation createGame($input: createGameInput!) {
     createGame(input: $input) {
       game {

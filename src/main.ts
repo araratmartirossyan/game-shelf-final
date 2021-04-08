@@ -1,27 +1,28 @@
-import { createApp } from 'vue'
+import { createApp, defineAsyncComponent } from 'vue'
+import { createPinia } from 'pinia'
 import urql from '@urql/vue'
-import ElementPlus from 'element-plus';
+
 import 'element-plus/lib/theme-chalk/index.css';
 
 // deps
 import App from './App.vue'
+
 import router from "./router";
 
 // @ts-ignore
 import { registerSW } from 'virtual:pwa-register'
+import { installComponents } from './utils/components.util'
 
 registerSW({
-  onNeedRefresh() {
-    // show a prompt to user
-  },
-  onOfflineReady() {
-    // show a ready to work offline to user
-  },
+  onNeedRefresh() { },
+  onOfflineReady() { },
 })
 
 const app = createApp(App)
 
-app.use(urql, { url: 'https://graph.myshelf.info/graphql' })
-app.use(router)
-app.use(ElementPlus)
-app.mount('#app')
+installComponents(app)
+
+app.use(createPinia())
+  .use(urql, { url: 'https://graph.myshelf.info/graphql' })
+  .use(router)
+  .mount('#app')

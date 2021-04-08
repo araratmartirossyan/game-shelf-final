@@ -24,17 +24,17 @@
       </el-upload>
 
       <el-select
-        v-model="currentGame"
+        v-model="useRawApiGameStore.game"
         @change="onSetFoundGame"
         filterable
         remote
         reserve-keyword
         placeholder="Начните писать название игры"
-        :remote-method="remoteMethod"
-        :loading="searchLoading"
+        :remote-method="useRawApiGameStore.searchGame"
+        :loading="useRawApiGameStore.loading"
       >
         <el-option
-          v-for="item in options"
+          v-for="item in useRawApiGameStore.options"
           :key="item.value"
           :label="item.label"
           :value="item"
@@ -42,12 +42,8 @@
         </el-option>
       </el-select>
 
-      <form-game
-        ref="formRef"
-        :game-form="gameForm"
-        @update-form="handleUpdateForm"
-      />
-      <span class="create-game__form--error"> {{ formError }} </span>
+      <form-game :game-form="gameForm" @update-form="handleUpdateForm" />
+      <span class="create-game__form--error"> {{ createGameError }} </span>
     </div>
     <template #bottom>
       <el-button
@@ -64,71 +60,55 @@
 // libs
 import { useRouter } from 'vue-router'
 import { ref, defineAsyncComponent } from 'vue'
-import { omit } from 'ramda'
-
-// hooks
-import { handleCreateGame } from './utils/createGame'
-import { searchGame } from './utils/searchGame'
 
 // graphQl
 import { useMutation } from '@urql/vue'
-import { createGame } from './../../graphql/mutations/createGame.mutation'
+import { createGameMutation } from '@/graphql/mutations/createGame.mutation'
+
+// Store
+import { useRawGameStore, useGameStore } from '@/stores'
 
 // layout
-const TgPage = defineAsyncComponent(
-  () => import('@/components/layout/Page.vue')
-)
 const FormGame = defineAsyncComponent(() => import('@/components/GameForm.vue'))
 
 const { back } = useRouter()
 
-const {
-  remoteMethod,
-  foundGame,
-  currentGame,
-  searchLoading,
-  options
-} = searchGame()
+const useRawApiGameStore = useRawGameStore()
+const { createGame, createGameError } = useGameStore()
+
+useRawApiGameStore.fetchGenres()
 
 const gameForm = ref<any>({
   title: '',
   description: '',
   genres: [],
-  genresIds: [],
   platform: '',
   picture: ''
 })
-
-const formError = ref('')
-const formRef = ref(null)
 
 const handleUpdateForm = ({ key, value }: GSAPI.InputForm) => {
   gameForm[key].value = value
 }
 
-const { executeMutation } = useMutation(createGame)
+const { executeMutation } = useMutation(createGameMutation)
 
 const onGameCreate = async () => {
-  const prepareForm = gameForm.value.genresIds
+  const prepareForm = useRawApiGameStore.genresIds
     ? {
         ...gameForm.value,
-        genres: gameForm.value.genresIds
+        genres: useRawApiGameStore.genresIds
       }
     : gameForm.value
+  await createGame(prepareForm, executeMutation)
 
-  await handleCreateGame(
-    formError,
-    omit(['genresIds'], prepareForm),
-    executeMutation
-  )
   back()
 }
 
 const onSetFoundGame = async (game: any) => {
-  const convertedGame = await foundGame(game)
+  await useRawApiGameStore.fetchGame(game)
   gameForm.value = {
     ...gameForm.value,
-    ...convertedGame
+    ...useRawApiGameStore.game
   }
 }
 
