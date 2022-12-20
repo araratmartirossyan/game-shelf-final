@@ -31,7 +31,7 @@
       <div class="game-info__content">
         <div class="game-info__content-header">
           <div class="game-info__content_text">
-            <heading tag="h5">
+            <heading tag="h2">
               {{ gamesStore.oneGame.title }}
             </heading>
             <span class="game-info__content_platform">
@@ -116,13 +116,16 @@ const handleDeleteGame = async () => {
   }
 }
 .game-info {
+  padding: 10px;
   &__header {
     display: flex;
 
     .el-avatar {
       width: 100%;
-      height: 260px;
-      border-radius: 16px;
+      height: 460px;
+      border-radius: 32px;
+      box-shadow: rgb(0 0 0 / 10%) 0px -1px 0px 0px inset,
+        rgb(51 51 51 / 20%) 0px 2px 5px 0px;
       background: none;
 
       img {
@@ -132,23 +135,17 @@ const handleDeleteGame = async () => {
   }
 
   &__content {
-    background: white;
-    box-shadow: rgb(0 0 0 / 10%) 0px -1px 0px 0px inset,
-      rgb(51 51 51 / 20%) 0px 2px 5px 0px;
-    z-index: 9999;
-    position: absolute;
-    top: 35%;
     padding: 12px;
     border-radius: 16px;
+    margin-top: $spacing-m;
 
-    // margin-top: $spacing-m;
     &_text {
       display: flex;
       flex-direction: column;
     }
 
     &_platform {
-      font-size: $font-size-tiny;
+      font-size: $font-size-heading-h5;
       color: $color-dark;
     }
     &_tags {

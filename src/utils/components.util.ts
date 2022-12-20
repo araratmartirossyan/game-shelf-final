@@ -1,5 +1,5 @@
-import { App } from '@vue/runtime-core';
-import { defineAsyncComponent } from 'vue';
+import { App } from '@vue/runtime-core'
+import { defineAsyncComponent } from 'vue'
 
 import {
   ElMessage,
@@ -12,8 +12,8 @@ import {
   ElFormItem,
   ElForm,
   ElUpload,
-  ElButton,
-} from 'element-plus';
+  ElButton
+} from 'element-plus'
 
 const TgPage = defineAsyncComponent(
   () => import('@/components/layout/Page.vue')
@@ -31,20 +31,18 @@ export const installComponents = (app: App) => {
     { name: 'ElForm', component: ElForm },
     { name: 'ElUpload', component: ElUpload },
     {
-      name: 'ElButton', component: ElButton
+      name: 'ElButton',
+      component: ElButton
     }
   ]
 
-  const plugins = [
-    ElMessage,
-    ElMessageBox,
-  ]
+  const plugins = [ElMessage, ElMessageBox]
 
   components.forEach(({ name, component }) => {
     app.component(name, component)
   })
 
-  plugins.forEach(plugin => {
+  plugins.forEach((plugin) => {
     app.use(plugin)
   })
 }

@@ -30,7 +30,8 @@ import { defineProps, defineAsyncComponent } from 'vue'
 // Components
 const Heading = defineAsyncComponent(() => import('@/components/Heading.vue'))
 
-const defaultUrl = import.meta.env.API_URL || 'https://graph.myshelf.info'
+const defaultUrl =
+  import.meta.env.VITE_APP_API_URL || 'https://myshelf.incodewetrust.dev'
 
 defineProps({
   title: {

@@ -9,9 +9,13 @@ import { game } from '@/graphql/queries/game.query'
 // Types
 import { OperationContext, OperationResult } from '@urql/core'
 
-type ExecMutation = (variables: any, context?: Partial<OperationContext>) => Promise<OperationResult<any>>
+type ExecMutation = (
+  variables: any,
+  context?: Partial<OperationContext>
+) => Promise<OperationResult<any>>
 
-const defaultUrl = import.meta.env.API_URL || 'https://graph.myshelf.info'
+const defaultUrl =
+  import.meta.env.VITE_APP_API_URL || 'https://myshelf.incodewetrust.dev'
 
 export const useGameStore = defineStore({
   id: 'games',
@@ -26,7 +30,9 @@ export const useGameStore = defineStore({
     oneGame: ({ game }: GSAPI.GameResponse) => game,
     oneGamePicture: ({ game }: GSAPI.GameResponse) => {
       const picture = game?.picture?.formats.large
-      return picture ? `${defaultUrl}${picture.url}` : `${defaultUrl}/uploads/game_controller_221caf2dd1.svg`
+      return picture
+        ? `${defaultUrl}${picture.url}`
+        : `${defaultUrl}/uploads/game_controller_221caf2dd1.svg`
     }
   },
   actions: {
@@ -72,7 +78,7 @@ export const useGameStore = defineStore({
       executeMutation: ExecMutation
     ) {
       const { error } = await executeMutation({
-        input: { data: { ...gameForm } },
+        input: { data: { ...gameForm } }
       })
 
       if (error) {
@@ -80,15 +86,15 @@ export const useGameStore = defineStore({
         ElMessage({
           message: error.message,
           type: 'error',
-          center: true,
+          center: true
         })
       }
 
       ElMessage({
         message: 'Игра добавлена',
         type: 'success',
-        center: true,
+        center: true
       })
     }
-  },
+  }
 })
