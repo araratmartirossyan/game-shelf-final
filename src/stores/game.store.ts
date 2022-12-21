@@ -1,100 +1,91 @@
 import { defineStore } from 'pinia'
-import { useQuery, gql } from '@urql/vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-// GraphQL requests
-import { myGames } from '@/graphql/queries/games.query'
-import { game } from '@/graphql/queries/game.query'
+// Services
+import * as GameService from './../services/games.service'
 
 // Types
-import { OperationContext, OperationResult } from '@urql/core'
+import { ref, computed } from 'vue'
 
-type ExecMutation = (
-  variables: any,
-  context?: Partial<OperationContext>
-) => Promise<OperationResult<any>>
+const defaultUrl = 'https://myshelf.incodewetrust.dev'
 
-const defaultUrl =
-  import.meta.env.VITE_APP_API_URL || 'https://myshelf.incodewetrust.dev'
+export const useGameStore = defineStore('gameStore', () => {
+  const loading = ref<boolean>()
+  const createGameError = ref<any>()
+  // Game
+  const oneGame = ref<GSAPI.Game | null>(null)
 
-export const useGameStore = defineStore({
-  id: 'games',
-  state: () => ({
-    game: {},
-    games: [],
-    loading: false,
-    createGameError: {}
-  }),
-  getters: {
-    gamesList: ({ games }: GSAPI.GamesResponse) => games,
-    oneGame: ({ game }: GSAPI.GameResponse) => game,
-    oneGamePicture: ({ game }: GSAPI.GameResponse) => {
-      const picture = game?.picture?.formats.large
-      return picture
-        ? `${defaultUrl}${picture.url}`
-        : `${defaultUrl}/uploads/game_controller_221caf2dd1.svg`
+  const fetchGame = async (id: string) => {
+    const data = await GameService.fetchGame(id)
+    oneGame.value = data
+  }
+
+  const oneGamePicture = computed(() => {
+    const picture = oneGame.value?.picture?.formats.large
+    return picture
+      ? `${defaultUrl}${picture.url}`
+      : `${defaultUrl}/uploads/game_controller_221caf2dd1.svg`
+  })
+
+  // GameList
+  const gamesList = ref<GSAPI.Game[]>([])
+  const fetchGames = async () => {
+    loading.value = true
+    const games = await GameService.fetchGames()
+    gamesList.value = games
+    loading.value = false
+  }
+
+  // Delete Game
+  const deleteGame = async (id: string) => {
+    try {
+      await ElMessageBox.confirm('Игра будет удалена', 'Внимание', {
+        type: 'warning',
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Отмена'
+      })
+      await GameService.deleteGame(id)
+      ElMessage({
+        type: 'success',
+        message: 'Удалено'
+      })
+      return 'Success'
+    } catch (err) {
+      ElMessage({
+        type: 'info',
+        message: 'Отменено'
+      })
+      throw new Error('Canceled')
     }
-  },
-  actions: {
-    async fetchGames() {
-      const { fetching, data } = await useQuery({
-        query: gql(myGames)
-      })
-      this.loading = fetching.value
-      this.games = data.value.games
-    },
-    async fetchGame(id: string | string[]) {
-      const { data } = await useQuery({
-        query: gql(game),
-        variables: { id }
-      })
-      this.game = data.value.game as GSAPI.GameResponse
-    },
-    async deleteGame(id: string | string[], executeMutation: ExecMutation) {
-      try {
-        await ElMessageBox.confirm('Игра будет удалена', 'Внимание', {
-          type: 'warning',
-          confirmButtonText: 'OK',
-          cancelButtonText: 'Отмена'
-        })
-        await executeMutation({
-          input: { where: { id } }
-        })
-        ElMessage({
-          type: 'success',
-          message: 'Удалено'
-        })
-        return 'Success'
-      } catch (err) {
-        ElMessage({
-          type: 'info',
-          message: 'Отменено'
-        })
-        throw new Error('Canceled')
-      }
-    },
-    async createGame(
-      gameForm: GSAPI.CreateGameInput,
-      executeMutation: ExecMutation
-    ) {
-      const { error } = await executeMutation({
-        input: { data: { ...gameForm } }
-      })
+  }
 
-      if (error) {
-        this.createGameError = error.message
-        ElMessage({
-          message: error.message,
-          type: 'error',
-          center: true
-        })
-      }
-
+  const createGame = async (gameForm: GSAPI.CreateGameInput) => {
+    try {
+      await GameService.createGame(gameForm)
       ElMessage({
         message: 'Игра добавлена',
         type: 'success',
         center: true
       })
+    } catch (error: any) {
+      createGameError.value = error.message
+      ElMessage({
+        message: error.message,
+        type: 'error',
+        center: true
+      })
     }
+  }
+
+  return {
+    oneGame,
+    oneGamePicture,
+    fetchGame,
+    deleteGame,
+    createGame,
+    createGameError,
+    loading,
+    gamesList,
+    fetchGames
   }
 })

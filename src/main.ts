@@ -1,6 +1,5 @@
-import { createApp, defineAsyncComponent } from 'vue'
+import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import urql from '@urql/vue'
 import ElementPlus from 'element-plus'
 
 import 'element-plus/dist/index.css'
@@ -12,7 +11,6 @@ import router from './router'
 
 // @ts-ignore
 import { registerSW } from 'virtual:pwa-register'
-import { installComponents } from './utils/components.util'
 
 registerSW({
   onNeedRefresh() {},
@@ -21,10 +19,5 @@ registerSW({
 
 const app = createApp(App)
 app.use(ElementPlus)
-installComponents(app)
 
-app
-  .use(createPinia())
-  .use(urql, { url: 'https://myshelf.incodewetrust.dev/graphql' })
-  .use(router)
-  .mount('#app')
+app.use(createPinia()).use(router).mount('#app')

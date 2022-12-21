@@ -4,7 +4,7 @@
       <el-avatar
         shape="circle"
         :size="40"
-        icon="el-icon-back"
+        :icon="Back"
         class="header-icon"
         @click="push('/')"
       />
@@ -14,13 +14,13 @@
       <el-avatar
         shape="circle"
         :size="50"
-        icon="el-icon-delete"
+        :icon="Delete"
         class="add-icon"
         @click="handleDeleteGame"
       />
     </template>
 
-    <div class="game-info" v-if="gamesStore.game">
+    <div class="game-info" v-if="gamesStore.oneGame">
       <div class="game-info__header">
         <el-avatar
           shape="square"
@@ -65,29 +65,23 @@
 <script setup lang="ts">
 // libs
 import { useRoute, useRouter } from 'vue-router'
-import { defineAsyncComponent } from 'vue'
-
-// GraphQl
-import { deleteGame } from '@/graphql/mutations/deleteGame.mutation'
-import { useMutation } from '@urql/vue'
 
 // stores
-import { useGameStore } from '@/stores/game.store'
+import { useGameStore } from '../../stores/game.store'
 
 // Components
-const Heading = defineAsyncComponent(() => import('@/components/Heading.vue'))
+import TgPage from '../../components/layout/Page.vue'
+import Heading from '../../components/Heading.vue'
+import { Delete, Back } from '@element-plus/icons-vue'
 
 const { params } = useRoute()
 const { push } = useRouter()
 
 const gamesStore = useGameStore()
-gamesStore.fetchGame(params.id)
-
-// Can't call useMutation outside of setup function
-const { executeMutation } = useMutation(deleteGame)
+gamesStore.fetchGame(params.id as string)
 
 const handleDeleteGame = async () => {
-  const result = await gamesStore.deleteGame(params.id, executeMutation)
+  const result = await gamesStore.deleteGame(params.id as string)
   if (result) {
     push('/')
   }

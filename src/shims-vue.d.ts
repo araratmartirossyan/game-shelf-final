@@ -11,4 +11,6 @@ declare module '*.graphql' {
   export = Schema
 }
 
-declare module 'useFuse';
+declare module 'useFuse'
+
+import 'vite/client'

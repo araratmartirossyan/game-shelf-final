@@ -1,65 +1,66 @@
 import { defineStore } from 'pinia'
-import { useQuery, gql } from '@urql/vue'
-
 // services
-import { findGame, fetchGame } from '@/services/search.service'
-import { prepareGenres } from '@/services/prepareData.service'
+import * as SearchService from '../services/search.service'
+import * as GenresService from '../services/genres.service'
+
+import { prepareGenres } from '../services/prepareData.service'
 
 // GraphQL
-import { fetchGenres } from '@/graphql/queries/genres.query'
-import { Ref } from 'vue'
+import { computed, ref } from 'vue'
 
+export const useRawGameStore = defineStore('rawGameApi', () => {
+  const gamesList = ref<RAWGAMEAPI.RAW_GAME[]>([])
+  const loading = ref<boolean>()
+  const genres = ref<GSAPI.Genre[]>([])
+  const platforms = ref<GSAPI.Platform[]>([])
+  const foundGame = ref<GSAPI.FoundGameInput | null>(null)
+  const genresIds = ref<(string | undefined)[]>([])
 
-type useRawGameStoreState = {
-  game: Partial<RAWGAMEAPI.RAW_GAME>;
-  games: RAWGAMEAPI.RAW_GAME[];
-  loading: boolean;
-  genres: GSAPI.Genre[];
-  foundGame: GSAPI.GameForm;
-  genresIds: (string | undefined)[];
-}
+  const searchGame = async (qs: string) => {
+    loading.value = true
+    gamesList.value = await SearchService.findGame(qs)
+    loading.value = false
+  }
+  const fetchGenres = async () => {
+    const data = await GenresService.fetchGenres()
+    genres.value = data
+  }
 
+  const fetchPlatforms = async () => {
+    const data = await GenresService.fetchPlatforms()
+    platforms.value = data
+  }
 
-export const useRawGameStore = defineStore({
-  id: 'rawGameApi',
-  state: (): useRawGameStoreState => ({
-    game: {},
-    games: [],
-    loading: false,
-    genres: [],
-    foundGame: {},
-    genresIds: []
-  }),
-  getters: {
-    gamesList: ({ games }: RAWGAMEAPI.RawGamesResponse) => games,
-    options: ({ games }: RAWGAMEAPI.RawGamesResponse) => games.map((game) => ({
-      label: game.name,
-      value: game,
-    })),
-    game: ({ foundGame }: RAWGAMEAPI.FoundGameGetter) => foundGame
-  },
-  actions: {
-    async searchGame(qs: string) {
-      this.loading = true
-      this.games = await findGame(qs)
-      this.loading = false
-    },
-    async fetchGenres() {
-      const { data } = await useQuery({ query: fetchGenres })
-      this.genres = data.value.genres
-    },
-    async fetchGame(game: Ref<RAWGAMEAPI.RAW_GAME>) {
-      const fetchedGame = await fetchGame(game.value.id)
-      const parsedGenres = prepareGenres(game.value.genres, this.genres)
+  const fetchGame = async (game: RAWGAMEAPI.RAW_GAME) => {
+    const fetchedGame = await SearchService.fetchGame(game.id)
+    const parsedGenres = prepareGenres(game.genres, genres.value)
+    genresIds.value = parsedGenres.apiValues
 
-      this.genresIds = parsedGenres.apiValues
-
-      this.foundGame = {
-        title: fetchedGame.name,
-        description: fetchedGame.description_raw,
-        genres: parsedGenres.formValues as string[],
-      }
+    foundGame.value = {
+      title: fetchedGame.name,
+      description: fetchedGame.description_raw,
+      genres: parsedGenres.formValues as string[]
     }
+  }
 
-  },
+  return {
+    gamesList,
+    options: computed(() =>
+      gamesList.value.map((game) => ({
+        label: game.name,
+        value: game
+      }))
+    ),
+    loading,
+    game: foundGame,
+    fetchGame,
+    searchGame,
+
+    fetchGenres,
+    genresIds,
+    genres,
+
+    fetchPlatforms,
+    platforms
+  }
 })

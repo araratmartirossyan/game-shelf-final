@@ -4,7 +4,7 @@
       <el-avatar
         shape="circle"
         :size="40"
-        icon="el-icon-back"
+        :icon="Back"
         class="header-icon"
         @click="back"
       />
@@ -14,7 +14,7 @@
     <div class="game-form">
       <el-upload
         class="avatar-uploader"
-        action="https://graph.myshelf.info/upload"
+        action="https://myshelf.incodewetrust.dev/upload"
         :show-file-list="false"
         name="files"
         :on-success="handleUploadSuccess"
@@ -42,7 +42,12 @@
         </el-option>
       </el-select>
 
-      <form-game :game-form="gameForm" @update-form="handleUpdateForm" />
+      <form-game
+        v-model:description="gameForm.description"
+        v-model:genres="gameForm.genres"
+        v-model:platform="gameForm.platform"
+        v-model:title="gameForm.title"
+      />
       <span class="create-game__form--error"> {{ createGameError }} </span>
     </div>
     <template #bottom>
@@ -59,26 +64,29 @@
 <script setup lang="ts">
 // libs
 import { useRouter } from 'vue-router'
-import { ref, defineAsyncComponent } from 'vue'
-
-// graphQl
-import { useMutation } from '@urql/vue'
-import { createGameMutation } from '@/graphql/mutations/createGame.mutation'
+import { ref, unref } from 'vue'
 
 // Store
-import { useRawGameStore, useGameStore } from '@/stores'
+import { useRawGameStore, useGameStore } from '../../stores'
 
 // layout
-const FormGame = defineAsyncComponent(() => import('@/components/GameForm.vue'))
+import TgPage from '../../components/layout/Page.vue'
+import FormGame from '../../components/GameForm.vue'
+import { Back } from '@element-plus/icons-vue'
 
 const { back } = useRouter()
 
 const useRawApiGameStore = useRawGameStore()
 const { createGame, createGameError } = useGameStore()
 
+interface GamePickerInput {
+  label: string
+  value: RAWGAMEAPI.RAW_GAME
+}
+
 useRawApiGameStore.fetchGenres()
 
-const gameForm = ref<any>({
+const gameForm = ref<GSAPI.CreateGameInput>({
   title: '',
   description: '',
   genres: [],
@@ -86,29 +94,30 @@ const gameForm = ref<any>({
   picture: ''
 })
 
-const handleUpdateForm = ({ key, value }: GSAPI.InputForm) => {
-  gameForm[key].value = value
-}
-
-const { executeMutation } = useMutation(createGameMutation)
-
 const onGameCreate = async () => {
+  const form = unref(gameForm)
   const prepareForm = useRawApiGameStore.genresIds
     ? {
-        ...gameForm.value,
-        genres: useRawApiGameStore.genresIds
+        ...form,
+        genres: useRawApiGameStore.genresIds as string[]
       }
-    : gameForm.value
-  await createGame(prepareForm, executeMutation)
+    : form
+  await createGame(prepareForm)
 
   back()
 }
 
-const onSetFoundGame = async (game: any) => {
-  await useRawApiGameStore.fetchGame(game)
-  gameForm.value = {
-    ...gameForm.value,
-    ...useRawApiGameStore.game
+const onSetFoundGame = async (game: GamePickerInput) => {
+  await useRawApiGameStore.fetchGame(game.value)
+  console.log(useRawApiGameStore.game)
+  if (useRawApiGameStore.game) {
+    const { title, description, genres } = useRawApiGameStore.game
+    gameForm.value = {
+      ...gameForm.value,
+      title,
+      description,
+      genres
+    }
   }
 }
 

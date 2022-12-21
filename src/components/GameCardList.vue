@@ -25,28 +25,17 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineAsyncComponent } from 'vue'
-
-// Components
-const Heading = defineAsyncComponent(() => import('@/components/Heading.vue'))
+import { defineProps } from 'vue'
+import Heading from './Heading.vue'
 
 const defaultUrl =
   import.meta.env.VITE_APP_API_URL || 'https://myshelf.incodewetrust.dev'
 
-defineProps({
-  title: {
-    type: String,
-    default: ''
-  },
-  picture: {
-    type: String,
-    default: null
-  },
-  description: {
-    type: String,
-    default: ''
-  }
-})
+defineProps<{
+  title: string
+  picture: string
+  description: string
+}>()
 </script>
 
 <style lang="scss">

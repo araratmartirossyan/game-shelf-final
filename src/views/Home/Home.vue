@@ -5,7 +5,7 @@
       <el-avatar
         shape="circle"
         :size="40"
-        icon="el-icon-plus"
+        :icon="CirclePlus"
         class="add-icon"
         alt="plus-icon"
         @click="push({ name: 'game-form-create' })"
@@ -26,7 +26,10 @@
           :key="id"
           :description="description"
           :title="title"
-          :picture="picture?.formats.thumbnail.url"
+          :picture="
+            picture?.formats.thumbnail.url ||
+            'https://cdn.dribbble.com/users/458522/screenshots/13927869/media/722fc6cfab978952bf5f85cfe7319c3f.png?compress=1&resize=1600x1200&vertical=top'
+          "
           @click="push({ name: 'game-detail', params: { id: String(id) } })"
         />
       </template>
@@ -37,19 +40,19 @@
 
 <script setup lang="ts">
 // libs
-import { ref, defineAsyncComponent, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 // hooks
-import useFuse from '@/hooks/useFuse'
+import useFuse from '../../hooks/useFuse'
 
 // stores
-import { useGameStore } from '@/stores/game.store'
+import { useGameStore } from '../../stores/game.store'
 
 // components
-const GameCard = defineAsyncComponent(
-  () => import('@/components/GameCardList.vue')
-)
+import TgPage from '../../components/layout/Page.vue'
+import GameCard from '../../components/GameCardList.vue'
+import { CirclePlus } from '@element-plus/icons-vue'
 
 // Game Store logic
 const gamesStore = useGameStore()
@@ -59,7 +62,7 @@ gamesStore.fetchGames()
 const search = ref('')
 
 const gamesList = computed<GSAPI.Game[]>(() =>
-  useFuse(gamesStore.games, search.value, {
+  useFuse(gamesStore.gamesList, search.value, {
     threshold: 0.3,
     keys: ['title']
   })

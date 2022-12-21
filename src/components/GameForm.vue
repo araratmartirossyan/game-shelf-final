@@ -6,25 +6,31 @@
     :rules="rules"
   >
     <el-form-item label="Название игры">
-      <el-input placeholder="Название игры" v-model="gameForm.title" />
+      <el-input
+        placeholder="Название игры"
+        :value="title"
+        @input="$emit('update:title', $event.target.value)"
+      />
     </el-form-item>
     <el-form-item label="Описание игры">
       <el-input
         type="textarea"
         :rows="4"
         placeholder="Описание игры"
-        v-model="gameForm.description"
+        :value="description"
+        @input="$emit('update:description', $event.target.value)"
       />
     </el-form-item>
     <el-form-item label="Выбрать жанр">
       <el-select
-        v-model="gameForm.genres"
+        :model-value="genres"
         filterable
         multiple
         remote
         reserve-keyword
         placeholder="Жанр"
         :remote-method="searchGenre"
+        @change="(value: string) => $emit('update:genres', value)"
       >
         <el-option
           v-for="item in foundGenres"
@@ -37,12 +43,13 @@
 
     <el-form-item label="Выбрать платформу">
       <el-select
-        v-model="gameForm.platform"
+        :model-value="platform"
         filterable
         remote
         reserve-keyword
         placeholder="Playstation"
         :remote-method="searchPlatform"
+        @change="(value: string) => $emit('update:platform', value)"
       >
         <el-option
           v-for="item in foundPlatforms"
@@ -55,30 +62,27 @@
   </el-form>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 // libs
-import { ref, defineEmit, defineProps } from 'vue'
-
-import { useQuery } from '@urql/vue'
+import { onMounted, ref } from 'vue'
 import useFuse from './../hooks/useFuse'
 
 // Graph Ql
-import { fetchGenres } from '../graphql/queries/genres.query'
-import { fetchPlatform } from '../graphql/queries/platforms.query'
+import { useRawGameStore } from '../stores/searchGame.store'
 
-defineEmit(['updateForm'])
+defineEmits<{
+  (e: 'update:genres', value: string[]): void
+  (e: 'update:platform', value: string): void
+  (e: 'update:description', value: string): void
+  (e: 'update:title', value: string): void
+}>()
 
-defineProps({
-  gameForm: {
-    type: Object,
-    default: () => ({
-      title: '',
-      description: '',
-      genres: null,
-      platform: null
-    })
-  }
-})
+defineProps<{
+  genres: string[]
+  platform: string
+  description: string
+  title: string
+}>()
 
 const validationRef = ref(null)
 
@@ -91,12 +95,16 @@ const rules = {
   ]
 }
 
+const gameStore = useRawGameStore()
+
+onMounted(async () => {
+  await gameStore.fetchPlatforms()
+})
+
 // Genres
 const foundGenres = ref<GSAPI.Genre[]>([])
-const { data: genresResult } = useQuery({ query: fetchGenres })
-
 const searchGenre = (title: string) => {
-  foundGenres.value = useFuse<GSAPI.Genre>(genresResult.value.genres, title, {
+  foundGenres.value = useFuse<GSAPI.Genre>(gameStore.genres, title, {
     threshold: 0.3,
     keys: ['title']
   })
@@ -104,17 +112,11 @@ const searchGenre = (title: string) => {
 
 // Platform
 const foundPlatforms = ref<GSAPI.Platform[]>([])
-const { data: platformResult } = useQuery({ query: fetchPlatform })
-
 const searchPlatform = (title: string) => {
-  foundPlatforms.value = useFuse<GSAPI.Platform>(
-    platformResult.value.platforms,
-    title,
-    {
-      threshold: 0.3,
-      keys: ['title']
-    }
-  )
+  foundPlatforms.value = useFuse<GSAPI.Platform>(gameStore.platforms, title, {
+    threshold: 0.3,
+    keys: ['title']
+  })
 }
 </script>
 

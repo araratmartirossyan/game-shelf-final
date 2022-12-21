@@ -1,7 +1,11 @@
 import { request } from './rest.service'
 
-export const findGame = async (searchString: string): Promise<RAWGAMEAPI.RAW_GAME[]> => {
-  const data = await request(`games?search=${searchString}&key=d3a8596b18364a458089d109a36be3d5`)
+export const findGame = async (
+  searchString: string
+): Promise<RAWGAMEAPI.RAW_GAME[]> => {
+  const data = await request(
+    `games?search=${searchString}&key=d3a8596b18364a458089d109a36be3d5`
+  )
   return data.results
 }
 

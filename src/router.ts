@@ -1,26 +1,22 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
-const Home = () => import('./views/Home/Home.vue')
-const GameDetail = () => import('./views/GameDetail/GameDetail.vue')
-const GameForm = () => import('./views/GameForm/GameForm.vue')
-
 const history = createWebHistory()
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: () => import('./views/Home/Home.vue')
   },
   {
     path: '/game-form-create/',
     name: 'game-form-create',
-    component: GameForm
+    component: () => import('./views/GameForm/GameForm.vue')
   },
   {
     path: '/game-detail/:id',
     name: 'game-detail',
-    component: GameDetail
+    component: () => import('./views/GameDetail/GameDetail.vue')
   }
 ]
 
