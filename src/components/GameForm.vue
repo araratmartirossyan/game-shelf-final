@@ -150,4 +150,8 @@ const searchPlatform = (title: string) => {
 .el-popper {
   width: 97%;
 }
+
+.el-textarea__inner {
+  color: white;
+}
 </style>
