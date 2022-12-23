@@ -13,7 +13,7 @@ export function getUniqueObjects<T extends { _id: string }>(arr: T[]): T[] {
   return uniqueObjects
 }
 
-export function findByKeys(arr: GSAPI.Game[], values: string[]): T[] {
+export function findByKeys(arr: GSAPI.Game[], values: string[]) {
   return arr.filter((el) => {
     return values.some((f) => {
       if (el) {
