@@ -29,7 +29,8 @@
         filterable
         remote
         reserve-keyword
-        placeholder="Начните писать название игры"
+        v-focus
+        placeholder="Начните писать название игры 2"
         :remote-method="useRawApiGameStore.searchGame"
         :loading="useRawApiGameStore.loading"
       >
@@ -93,6 +94,15 @@ const gameForm = ref<GSAPI.CreateGameInput>({
   platform: '',
   picture: ''
 })
+
+const vFocus = {
+  mounted: (el: HTMLInputElement) => {
+    const input = el.querySelector('.el-input__inner')
+    if (input) {
+      input.removeAttribute('readonly')
+    }
+  }
+}
 
 const onGameCreate = async () => {
   const form = unref(gameForm)

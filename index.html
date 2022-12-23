@@ -1,47 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="./images/favicon.ico" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="Game Shelf - your digital shelf for your physical games"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" href="./images/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="description" content="Game Shelf - your digital shelf for your physical games" />
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- ios support -->
+    <link rel="shortcut icon" href="./images/manifest-icon-192.png" />
 
-  <!-- ios support -->
-  <link rel="shortcut icon" href="./images/manifest-icon-192.png">
+    <link rel="apple-touch-icon" href="./images/apple-icon-120.jpg" />
+    <link rel="apple-touch-icon" href="./images/apple-icon-152.jpg" />
+    <link rel="apple-touch-icon" href="./images/apple-icon-167.jpg" />
+    <link rel="apple-touch-icon" href="./images/apple-icon-180.jpg" />
+    <link rel="apple-touch-icon" href="./images/manifest-icon-192.png" />
+    <link rel="apple-touch-icon" href="./images/manifest-icon-512.png" />
 
-  <link rel="apple-touch-icon" href="./images/apple-icon-120.jpg" />
-  <link rel="apple-touch-icon" href="./images/apple-icon-152.jpg" />
-  <link rel="apple-touch-icon" href="./images/apple-icon-167.jpg" />
-  <link rel="apple-touch-icon" href="./images/apple-icon-180.jpg" />
-  <link rel="apple-touch-icon" href="./images/manifest-icon-192.png" />
-  <link rel="apple-touch-icon" href="./images/manifest-icon-512.png" />
+    <link
+      rel="apple-touch-startup-image"
+      href="./images/apple-splash-640x1136.jpg"
+      media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="./images/apple-splash-750x1294.jpg"
+      media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="./images/apple-splash-1242x2148.jpg"
+      media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="./images/apple-splash-1125x2436.jpg"
+      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="./images/apple-splash-1536x2048.jpg"
+      media="(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="./images/apple-splash-1668x2224.jpg"
+      media="(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="./images/apple-splash-2048x2732.jpg"
+      media="(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)"
+    />
 
-  <link rel="apple-touch-startup-image" href="./images/apple-splash-640x1136.jpg"
-    media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-  <link rel="apple-touch-startup-image" href="./images/apple-splash-750x1294.jpg"
-    media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-  <link rel="apple-touch-startup-image" href="./images/apple-splash-1242x2148.jpg"
-    media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-  <link rel="apple-touch-startup-image" href="./images/apple-splash-1125x2436.jpg"
-    media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-  <link rel="apple-touch-startup-image" href="./images/apple-splash-1536x2048.jpg"
-    media="(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
-  <link rel="apple-touch-startup-image" href="./images/apple-splash-1668x2224.jpg"
-    media="(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
-  <link rel="apple-touch-startup-image" href="./images/apple-splash-2048x2732.jpg"
-    media="(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="theme-color" content="#132968" />
+    <title>Game Shelf</title>
+  </head>
 
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#132968" />
-  <title>Game Shelf</title>
-</head>
-
-<body>
-  <div id="app"></div>
-  <script type="module" src="/src/main.ts"></script>
-</body>
-
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>

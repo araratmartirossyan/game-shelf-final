@@ -17,6 +17,9 @@ export const useRawGameStore = defineStore('rawGameApi', () => {
   const genresIds = ref<(string | undefined)[]>([])
 
   const searchGame = async (qs: string) => {
+    if (qs === '') {
+      return
+    }
     loading.value = true
     gamesList.value = await SearchService.findGame(qs)
     loading.value = false

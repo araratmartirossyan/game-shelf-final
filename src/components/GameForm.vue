@@ -8,8 +8,8 @@
     <el-form-item label="Название игры">
       <el-input
         placeholder="Название игры"
-        :value="title"
-        @input="$emit('update:title', $event.target.value)"
+        :model-value="title"
+        @input="(value: string) => $emit('update:title', value)"
       />
     </el-form-item>
     <el-form-item label="Описание игры">
@@ -17,15 +17,15 @@
         type="textarea"
         :rows="4"
         placeholder="Описание игры"
-        :value="description"
-        @input="$emit('update:description', $event.target.value)"
+        :model-value="description"
+        @input="(value: string) => $emit('update:description', value)"
       />
     </el-form-item>
     <el-form-item label="Выбрать жанр">
       <el-select
         :model-value="genres"
         filterable
-        multiple
+        :multiple-limit="1"
         remote
         reserve-keyword
         placeholder="Жанр"
