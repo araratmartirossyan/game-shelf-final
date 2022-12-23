@@ -6,8 +6,8 @@ import vue from '@vitejs/plugin-vue'
 
 const pwaConfig = {
   manifest: {
-    theme_color: '#132968',
-    background_color: '#132968',
+    theme_color: '#2a2a2a',
+    background_color: '#2a2a2a',
     display: 'standalone',
     scope: '/',
     start_url: '/',
