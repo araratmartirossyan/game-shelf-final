@@ -1,5 +1,4 @@
 import { resolve } from 'path'
-import graphqlPlugin from 'vite-plugin-graphql'
 import { VitePWA } from 'vite-plugin-pwa'
 
 import { defineConfig } from 'vite'
@@ -53,5 +52,5 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 600
   },
-  plugins: [vue(), VitePWA(pwaConfig), graphqlPlugin]
+  plugins: [vue(), VitePWA(pwaConfig)]
 })

@@ -47,7 +47,8 @@
         filterable
         remote
         reserve-keyword
-        placeholder="Playstation"
+        v-focus
+        placeholder="Платформа"
         :remote-method="searchPlatform"
         @change="(value: string) => $emit('update:platform', value)"
       >
@@ -83,6 +84,15 @@ defineProps<{
   description: string
   title: string
 }>()
+
+const vFocus = {
+  mounted: (el: HTMLInputElement) => {
+    const input = el.querySelector('.el-input__inner')
+    if (input) {
+      input.removeAttribute('readonly')
+    }
+  }
+}
 
 const validationRef = ref(null)
 
@@ -130,5 +140,14 @@ const searchPlatform = (title: string) => {
 ::placeholder,
 .el-select-dropdown__item {
   font-family: Nunito;
+}
+
+.el-select-dropdown__item.hover,
+.el-select-dropdown__item:hover {
+  color: black;
+}
+
+.el-popper {
+  width: 97%;
 }
 </style>
