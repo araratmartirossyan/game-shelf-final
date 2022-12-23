@@ -155,6 +155,7 @@ const { push } = useRouter()
     overflow: auto;
     position: relative;
     padding-left: $spacing-m;
+    overflow-x: hidden;
   }
 }
 
