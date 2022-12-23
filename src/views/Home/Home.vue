@@ -1,3 +1,72 @@
+<script setup lang="ts">
+// libs
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+// hooks
+import useFuse from '../../hooks/useFuse'
+
+// stores
+import { useGameStore, useRawGameStore } from '../../stores'
+
+// components
+import TgPage from '../../components/layout/Page.vue'
+import Tag from '../../components/Tag.vue'
+import GameCard from '../../components/GameCardList.vue'
+import { CirclePlus } from '@element-plus/icons-vue'
+import { findByKeys } from '../../utils/uniq'
+
+const rawGameStore = useRawGameStore()
+rawGameStore.fetchGenres()
+// Game Store logic
+const gamesStore = useGameStore()
+gamesStore.fetchGames()
+
+// Fast Search
+const search = ref('')
+const filterGenres = ref<string[]>([])
+const filterPlatforms = ref<string[]>([])
+
+const toggleGenre = (title: string) => {
+  if (filterGenres.value.includes(title)) {
+    filterGenres.value = filterGenres.value.filter((tag) => tag !== title)
+    return
+  }
+
+  filterGenres.value.push(title)
+}
+
+const togglePlatforms = (title: string) => {
+  if (filterPlatforms.value.includes(title)) {
+    filterPlatforms.value = filterPlatforms.value.filter((tag) => tag !== title)
+    return
+  }
+
+  filterPlatforms.value.push(title)
+}
+
+const gamesList = computed<GSAPI.Game[]>(() => {
+  let list = gamesStore.gamesList
+
+  if (filterGenres.value.length) {
+    list = findByKeys(list, filterGenres.value)
+  }
+
+  if (filterPlatforms.value.length) {
+    list = list.filter((game) =>
+      filterPlatforms.value.includes(game.platform.title)
+    )
+  }
+
+  return useFuse(list, search.value, {
+    threshold: 0.3,
+    keys: ['title']
+  })
+})
+
+const { push } = useRouter()
+</script>
+
 <template>
   <tg-page class="list">
     <template #top> Games ({{ gamesList && gamesList.length }}) </template>
@@ -11,7 +80,24 @@
         @click="push({ name: 'game-form-create' })"
       />
     </template>
-
+    <div class="list-tags">
+      <tag
+        v-for="{ title } in gamesStore.availableGenres"
+        :active="filterGenres.includes(title)"
+        @click="toggleGenre(title)"
+      >
+        {{ title }}
+      </tag>
+    </div>
+    <div class="list-tags mt-m">
+      <tag
+        v-for="{ title } in gamesStore.availablePlatforms"
+        :active="filterPlatforms.includes(title)"
+        @click="togglePlatforms(title)"
+      >
+        {{ title }}
+      </tag>
+    </div>
     <div class="list-cards" v-if="!gamesStore.loading">
       <el-input
         class="list-cards__search"
@@ -20,16 +106,14 @@
         v-model="search"
         clearable
       />
+
       <template v-if="gamesList">
         <game-card
           v-for="{ id, title, description, picture } in gamesList"
           :key="id"
           :description="description"
           :title="title"
-          :picture="
-            picture?.formats.thumbnail.url ||
-            'https://cdn.dribbble.com/users/458522/screenshots/13927869/media/722fc6cfab978952bf5f85cfe7319c3f.png?compress=1&resize=1600x1200&vertical=top'
-          "
+          :picture="picture?.formats.thumbnail.url"
           @click="push({ name: 'game-detail', params: { id: String(id) } })"
         />
       </template>
@@ -38,52 +122,39 @@
   </tg-page>
 </template>
 
-<script setup lang="ts">
-// libs
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-
-// hooks
-import useFuse from '../../hooks/useFuse'
-
-// stores
-import { useGameStore } from '../../stores/game.store'
-
-// components
-import TgPage from '../../components/layout/Page.vue'
-import GameCard from '../../components/GameCardList.vue'
-import { CirclePlus } from '@element-plus/icons-vue'
-
-// Game Store logic
-const gamesStore = useGameStore()
-gamesStore.fetchGames()
-
-// Fast Search
-const search = ref('')
-
-const gamesList = computed<GSAPI.Game[]>(() =>
-  useFuse(gamesStore.gamesList, search.value, {
-    threshold: 0.3,
-    keys: ['title']
-  })
-)
-
-const { push } = useRouter()
-</script>
-
 <style lang="scss">
 @import './../../assets/styles';
 
-.list-slider {
-  .tg-heading {
-    padding: 0 0 0 $spacing-m;
-  }
+.mt-m {
+  margin-top: $spacing-s;
 }
-.list-cards {
-  padding: $spacing-m;
 
-  &__search {
-    margin-bottom: $spacing-m;
+.list {
+  &-slider {
+    .tg-heading {
+      padding: 0 0 0 $spacing-m;
+    }
+  }
+
+  &-cards {
+    padding: $spacing-m;
+    &__search {
+      margin-bottom: $spacing-m;
+      .el-input__wrapper {
+        border-radius: 0.5rem;
+        height: 50px;
+        background: none;
+        text-align: center;
+      }
+    }
+  }
+
+  &-tags {
+    width: 100%;
+    display: flex;
+    overflow: auto;
+    position: relative;
+    padding-left: $spacing-m;
   }
 }
 

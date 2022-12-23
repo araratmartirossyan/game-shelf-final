@@ -6,6 +6,7 @@ import * as GameService from './../services/games.service'
 
 // Types
 import { ref, computed } from 'vue'
+import { getUniqueObjects } from '../utils/uniq'
 
 const defaultUrl = 'https://myshelf.incodewetrust.dev'
 
@@ -86,6 +87,16 @@ export const useGameStore = defineStore('gameStore', () => {
     createGameError,
     loading,
     gamesList,
+    availableGenres: computed(() =>
+      getUniqueObjects<GSAPI.Genre>(
+        gamesList.value.flatMap((item) => item.genres)
+      )
+    ),
+    availablePlatforms: computed(() =>
+      getUniqueObjects<GSAPI.Platform>(
+        gamesList.value.flatMap((item) => item.platform)
+      )
+    ),
     fetchGames
   }
 })

@@ -30,7 +30,7 @@
         remote
         reserve-keyword
         v-focus
-        placeholder="Начните писать название игры 2"
+        placeholder="Начните писать название игры"
         :remote-method="useRawApiGameStore.searchGame"
         :loading="useRawApiGameStore.loading"
       >
@@ -146,8 +146,8 @@ const handleUploadSuccess = ([res]: any, file: any) => {
 .create-game {
   &__confirm {
     width: 100%;
-    background: $color-primary;
-    color: $color-white;
+    background: $color-white;
+    color: #000;
     border: none;
     height: 50px;
     border-radius: 0;
@@ -210,5 +210,35 @@ const handleUploadSuccess = ([res]: any, file: any) => {
 
 .el-message {
   font-family: Nunito;
+}
+
+.el-textarea__inner {
+  background: none;
+  border-radius: 0.5rem;
+}
+
+.el-form-item__label {
+  color: white;
+}
+
+.el-input__wrapper {
+  border-radius: 0.5rem;
+  height: 50px;
+  background: none;
+  text-align: center;
+  margin-bottom: $spacing-s;
+
+  input {
+    color: white;
+  }
+}
+
+.el-select-dropdown__item {
+  color: white;
+}
+
+.el-popper {
+  border-radius: 1rem;
+  background: $color-secondary !important;
 }
 </style>

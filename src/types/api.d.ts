@@ -71,14 +71,14 @@ declare namespace GSAPI {
 
   type Platform = {
     title: string
-    _id?: string
-    id?: string
+    _id: string
+    id: string
   }
 
   type Genre = {
-    title?: string
-    _id?: string
-    id?: string
+    title: string
+    _id: string
+    id: string
   }
 }
 

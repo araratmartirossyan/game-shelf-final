@@ -9,7 +9,7 @@
         @click="push('/')"
       />
     </template>
-    <template #top> Игра </template>
+    <template #top> {{ gamesStore?.oneGame?.title }} </template>
     <template #append>
       <el-avatar
         shape="circle"
@@ -118,8 +118,7 @@ const handleDeleteGame = async () => {
       width: 100%;
       height: 460px;
       border-radius: 32px;
-      box-shadow: rgb(0 0 0 / 10%) 0px -1px 0px 0px inset,
-        rgb(51 51 51 / 20%) 0px 2px 5px 0px;
+
       background: none;
 
       img {
@@ -130,8 +129,9 @@ const handleDeleteGame = async () => {
 
   &__content {
     padding: 12px;
+    color: white;
+    font-family: Nunito;
     border-radius: 16px;
-    margin-top: $spacing-m;
 
     &_text {
       display: flex;
@@ -140,8 +140,9 @@ const handleDeleteGame = async () => {
 
     &_platform {
       font-size: $font-size-heading-h5;
-      color: $color-dark;
+      color: $color-white;
     }
+
     &_tags {
       margin-top: $spacing-xs;
       display: flex;

@@ -38,11 +38,11 @@
   position: absolute;
   right: 0;
   top: 0;
-  background: #f1f2f6;
+  background: $color-primary-black;
 
   &__top {
     color: #fff;
-    background-color: #132968;
+    background-color: $color-primary-black;
     height: 52px;
     display: flex;
     padding: 0 $spacing-m;

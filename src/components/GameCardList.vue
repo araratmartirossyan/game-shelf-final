@@ -1,22 +1,12 @@
 <template>
   <div class="game-card">
-    <div class="game-card__image">
-      <el-avatar
-        v-if="!picture"
-        shape="square"
-        :size="100"
-        fit="scale-down"
-        src="../"
-        alt="game-image"
-      />
-      <el-avatar
-        v-else
-        shape="square"
-        :size="100"
-        :src="`${defaultUrl}${picture}`"
-        alt="empty picture image"
-      />
-    </div>
+    <div
+      class="game-card__image"
+      :style="{
+        backgroundImage: `url(${imageUrl})`,
+        backgroundSize: 'cover'
+      }"
+    ></div>
     <div class="game-card__description">
       <heading tag="h5">{{ title }}</heading>
       <p>{{ description && description.slice(0, 50) }}...</p>
@@ -31,33 +21,35 @@ import Heading from './Heading.vue'
 const defaultUrl =
   import.meta.env.VITE_APP_API_URL || 'https://myshelf.incodewetrust.dev'
 
-defineProps<{
+const props = defineProps<{
   title: string
-  picture: string
+  picture?: string
   description: string
 }>()
+
+const imageUrl = !props.picture
+  ? `${defaultUrl}/uploads/game_controller_221caf2dd1.svg`
+  : `${defaultUrl}${props.picture}`
 </script>
 
 <style lang="scss">
 @import '../assets/styles';
 .game-card {
-  align-items: flex-start;
-  color: #425486;
+  color: white;
   display: flex;
   font-family: Nunito;
-  font-size: $font-size-heading-h3;
-  line-height: 24px;
-  font-style: normal;
-  min-height: 135px;
+  overflow: hidden;
+  padding: $spacing-s;
   height: 100%;
-  border-radius: 8px;
-  border: 0 solid;
-  padding: $spacing-m;
-  background-color: #fcfcfd;
-  justify-content: space-between;
-  text-transform: capitalize;
-  box-shadow: inset 0 -1px 0 0 rgb(0 0 0 / 10%), 0 2px 5px 0 rgb(51 51 51 / 20%);
+  border-radius: 1rem;
+  background-color: $color-secondary;
   margin-bottom: $spacing-s;
+
+  &__image {
+    width: 100%;
+    border-radius: 1rem;
+    height: 140px;
+  }
 
   &:active {
     background: rgb(128 128 128 / 25%);
@@ -76,12 +68,6 @@ defineProps<{
       font-size: $font-size-small;
       margin-bottom: 0;
     }
-  }
-  .el-avatar {
-    background: none;
-  }
-  .el-avatar > img {
-    width: 100% !important;
   }
 }
 </style>
