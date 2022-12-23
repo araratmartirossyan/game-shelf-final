@@ -155,7 +155,6 @@ const { push } = useRouter()
     overflow: auto;
     position: relative;
     padding-left: $spacing-m;
-    overflow-x: hidden;
   }
 }
 
@@ -169,5 +168,9 @@ const { push } = useRouter()
   .el-icon-plus {
     font-size: 26px;
   }
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 </style>
